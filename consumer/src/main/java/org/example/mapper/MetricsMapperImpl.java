@@ -1,5 +1,6 @@
 package org.example.mapper;
 
+import org.example.model.ListMetricModel;
 import org.example.model.MetricModel;
 import org.example.store.MetricsEntity;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,16 @@ public class MetricsMapperImpl implements MetricsMapper {
     @Override
     public MetricModel entityToDto(MetricsEntity entity) {
         return new MetricModel(entity.getId(), entity.getTimestamp(), entity.getName(), entity.getValue());
+    }
+
+    @Override
+    public ListMetricModel listEntityToDto(List<MetricsEntity> entity) {
+        ListMetricModel list = new ListMetricModel(new ArrayList<>());
+        for (MetricsEntity point : entity) {
+            MetricModel model = entityToDto(point);
+            list.getList().add(model);
+        }
+        return list;
     }
 
     @Override

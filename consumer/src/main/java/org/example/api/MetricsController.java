@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.example.exception.NotFoundException;
 import org.example.mapper.MetricsMapper;
+import org.example.model.ListMetricModel;
 import org.example.model.MetricModel;
 import org.example.store.MetricsEntity;
 import org.example.store.MetricsRepository;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping(value = EndPoint.metrics)
@@ -40,15 +40,18 @@ public class MetricsController {
 
     @Operation(
             summary = "Получение конкретной метрики по ее идентификатору.",
-            description = "Ждет на вход id(UUID) метрики."
+            description = "Ждет на вход идентификатор метрики в виде system.load.average.1m ."
     )
-    @GetMapping(path = "/{id}")
-    public MetricModel getOneMetricById(@PathVariable String id) {
-        UUID uuid = UUID.fromString(id);
-        MetricsEntity metricsEntity = repository
-                .findById(uuid)
-                .orElseThrow(() -> new NotFoundException("Metric with uuid = " + uuid
-                        + " was not found"));
-        return mapper.entityToDto(metricsEntity);
+    @GetMapping(path = "/{name}")
+    public ListMetricModel getOneMetricById(@PathVariable String name) {
+
+        List<MetricsEntity> listMetricsEntities= repository
+                .findAllByName(name);
+
+            if(listMetricsEntities.isEmpty()){
+                throw new NotFoundException("Metric with name = " + name
+                        + " was not found");
+            };
+        return mapper.listEntityToDto(listMetricsEntities);
     }
 }
