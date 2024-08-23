@@ -1,0 +1,23 @@
+server:
+  port: 8081
+
+spring:
+  kafka:
+    consumer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "org.example.*"
+    bootstrap-servers: localhost:29092
+  datasource:
+    url: jdbc:postgresql://localhost:5432/metrics
+    username: postgres
+    password: postgres
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: create-drop
+      show-sql: true
